@@ -1,10 +1,9 @@
 /** @since 1.0.0 */
 import { Applicative2 } from 'fp-ts/Applicative'
-import { Apply2 } from 'fp-ts/Apply'
+import { Apply2, apS as apS_ } from 'fp-ts/Apply'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
-import { flow, pipe, tuple } from 'fp-ts/function'
+import { absurd, flow, pipe, tuple } from 'fp-ts/function'
 import { Functor2 } from 'fp-ts/Functor'
-import { apS as apS_ } from 'fp-ts/Apply'
 import { Profunctor2 } from 'fp-ts/Profunctor'
 import { Predicate } from 'fp-ts/Predicate'
 import { HKT, Kind, URIS } from 'fp-ts/HKT'
@@ -16,8 +15,8 @@ import { HKT, Kind, URIS } from 'fp-ts/HKT'
 /** @internal */
 type Fold_<X, E, A> = {
   readonly step: (x: X, e: E) => X
-  readonly init: X
-  readonly done: (x: X) => A
+  readonly initial: X
+  readonly extract: (x: X) => A
 }
 
 /**
@@ -65,7 +64,9 @@ export const map =
   <A, B>(f: (a: A) => B) =>
   <E>(fa: Fold<E, A>): Fold<E, B> =>
   (run) =>
-    fa((a) => run({ step: a.step, init: a.init, done: flow(a.done, f) }))
+    fa((a) =>
+      run({ step: a.step, initial: a.initial, extract: flow(a.extract, f) })
+    )
 
 /**
  * @since 1.0.0
@@ -86,19 +87,23 @@ const apW =
   <E1 = never, E2 = never, A = never, B = never>(fa: Fold<E1, A>) =>
   (fab: Fold<E2, (a: A) => B>): Fold<E1 & E2, B> =>
   (run) =>
-    fab(({ step: stepL, init: initL, done: doneL }) =>
-      fa(({ step: stepR, init: initR, done: doneR }) => {
+    fab((left) =>
+      fa((right) => {
         const step = (
-          [xL, xR]: readonly [typeof initL, typeof initR],
+          x: readonly [typeof left.initial, typeof right.initial],
           a: E1 & E2
-        ) => tuple(stepL(xL, a), stepR(xR, a))
-        const init = tuple(initL, initR)
-        const done = ([xL, xR]: readonly [typeof initL, typeof initR]) =>
-          doneL(xL)(doneR(xR))
+        ) => tuple(left.step(x[0], a), right.step(x[1], a))
+
+        const initial = tuple(left.initial, right.initial)
+
+        const extract = (
+          x: readonly [typeof left.initial, typeof right.initial]
+        ) => left.extract(x[0])(right.extract(x[1]))
+
         return run({
           step,
-          init,
-          done,
+          initial,
+          extract,
         })
       })
     )
@@ -128,10 +133,10 @@ export const Apply: Apply2<URI> = {
 export const of =
   <E = never, A = never>(a: A): Fold<E, A> =>
   (run) =>
-    run<undefined>({
-      step: () => undefined,
-      init: undefined,
-      done: () => a,
+    run<never>({
+      step: absurd,
+      initial: undefined as never,
+      extract: () => a,
     })
 
 /**
@@ -174,13 +179,13 @@ export const Profunctor: Profunctor2<URI> = {
  */
 export const premap =
   <A, B>(f: (a: A) => B) =>
-  <R>(fld: Fold<B, R>): Fold<A, R> =>
+  <R>(fold_: Fold<B, R>): Fold<A, R> =>
   (run) =>
-    fld((b) =>
+    fold_((b) =>
       run({
         step: (x, y) => b.step(x, f(y)),
-        init: b.init,
-        done: b.done,
+        initial: b.initial,
+        extract: b.extract,
       })
     )
 
@@ -189,14 +194,14 @@ export const premap =
  * @category Combinators
  */
 export const prefilter =
-  <A>(pred: Predicate<A>) =>
-  <R>(fld: Fold<A, R>): Fold<A, R> =>
+  <A>(predicate: Predicate<A>) =>
+  <R>(fold_: Fold<A, R>): Fold<A, R> =>
   (run) =>
-    fld((a) =>
+    fold_((a) =>
       run({
-        step: (x, y) => (pred(y) ? a.step(x, y) : x),
-        init: a.init,
-        done: a.done,
+        step: (x, y) => (predicate(y) ? a.step(x, y) : x),
+        initial: a.initial,
+        extract: a.extract,
       })
     )
 
@@ -211,14 +216,14 @@ export const take =
     fea((ea) =>
       run({
         step: (
-          acc: { readonly length: number; readonly x: typeof ea.init },
+          acc: { readonly length: number; readonly x: typeof ea.initial },
           e: E
         ) =>
           acc.length < n
             ? { length: acc.length + 1, x: ea.step(acc.x, e) }
             : acc,
-        init: { length: 0, x: ea.init },
-        done: ({ x }) => ea.done(x),
+        initial: { length: 0, x: ea.initial },
+        extract: ({ x }) => ea.extract(x),
       })
     )
 
@@ -232,7 +237,7 @@ export function fold<F extends URIS>(
 export function fold<F>(
   F: Foldable<F>
 ): <E, A>(f: Fold<E, A>) => (fa: HKT<F, E>) => A {
-  return (f) => (fa) => f((x) => x.done(F.reduce(fa, x.init, x.step)))
+  return (f) => (fa) => f((x) => x.extract(F.reduce(fa, x.initial, x.step)))
 }
 
 // -------------------------------------------------------------------------------------
