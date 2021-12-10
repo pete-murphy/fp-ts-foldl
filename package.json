@@ -20,16 +20,20 @@
     "jest": "^26.6.3",
     "ts-jest": "^26.5.3",
     "fast-check": "^2.13.0",
-    "docs-ts": "^0.6.10"
+    "docs-ts": "^0.6.10",
+    "cspell": "^5.5.2",
+    "markdown-magic": "^2.0.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build:watch": "tsc -w -p tsconfig.build.json",
-    "prepublish": "npm run build",
-    "pretty": "npm run prettier --check .",
-    "lint": "npm run eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
-    "test": "npm run jest",
-    "test:watch": "npm run jest --watch",
-    "docs": "npm run docs-ts"
+    "prepublish": "yarn run build",
+    "pretty": "yarn run prettier --check .",
+    "lint": "yarn run eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
+    "test": "yarn run jest",
+    "test:watch": "yarn run jest --watch",
+    "docs": "yarn run docs-ts",
+    "spell": "yarn cspell '**/*.*'",
+    "md": "yarn run markdown"
   }
 }

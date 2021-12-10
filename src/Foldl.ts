@@ -2,7 +2,7 @@
 import { Applicative2 } from 'fp-ts/Applicative'
 import { Apply2, apS as apS_ } from 'fp-ts/Apply'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
-import { absurd, flow, pipe, tuple } from 'fp-ts/function'
+import { absurd, flow, identity, pipe, tuple } from 'fp-ts/function'
 import { Functor2 } from 'fp-ts/Functor'
 import { Profunctor2 } from 'fp-ts/Profunctor'
 import { Predicate } from 'fp-ts/Predicate'
@@ -252,3 +252,29 @@ export const Do: Fold<unknown, {}> =
 
 /** @since 1.0.0 */
 export const apS = apS_(Apply)
+
+// -------------------------------------------------------------------------------------
+// utilities
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 1.0.0
+ * @category Utilities
+ */
+export const sum: Fold<number, number> = (run) =>
+  run({
+    step: (x, y) => x + y,
+    initial: 0,
+    extract: identity,
+  })
+
+/**
+ * @since 1.0.0
+ * @category Utilities
+ */
+export const length: Fold<number, number> = (run) =>
+  run({
+    step: (n, _) => n + 1,
+    initial: 0,
+    extract: identity,
+  })
