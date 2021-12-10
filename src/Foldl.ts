@@ -1,4 +1,4 @@
-/** @since 1.0.0 */
+/** @since 0.1.0 */
 import { Applicative2 } from 'fp-ts/Applicative'
 import { Apply2, apS as apS_ } from 'fp-ts/Apply'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
@@ -20,7 +20,7 @@ type Fold_<X, E, A> = {
 }
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Model
  */
 export type Fold<E, A> = <R>(run: <X>(run: Fold_<X, E, A>) => R) => R
@@ -39,13 +39,13 @@ const _promap: Profunctor2<URI>['promap'] = (fea, f, g) =>
 // -------------------------------------------------------------------------------------
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export const URI = 'Fold'
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export type URI = typeof URI
@@ -57,7 +57,7 @@ declare module 'fp-ts/HKT' {
 }
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instance operations
  */
 export const map =
@@ -69,7 +69,7 @@ export const map =
     )
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export const Functor: Functor2<URI> = {
@@ -80,7 +80,7 @@ export const Functor: Functor2<URI> = {
 /**
  * Less strict version of [`ap`](#ap).
  *
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instance operations
  */
 const apW =
@@ -109,7 +109,7 @@ const apW =
     )
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instance operations
  */
 const ap: <E = never, A = never, B = never>(
@@ -117,7 +117,7 @@ const ap: <E = never, A = never, B = never>(
 ) => (fab: Fold<E, (a: A) => B>) => Fold<E, B> = apW
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export const Apply: Apply2<URI> = {
@@ -127,7 +127,7 @@ export const Apply: Apply2<URI> = {
 }
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instance operations
  */
 export const of =
@@ -140,7 +140,7 @@ export const of =
     })
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export const Applicative: Applicative2<URI> = {
@@ -151,7 +151,7 @@ export const Applicative: Applicative2<URI> = {
 }
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instance operations
  */
 const promap =
@@ -160,7 +160,7 @@ const promap =
     pipe(_map(fea, g), premap(f))
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Instances
  */
 export const Profunctor: Profunctor2<URI> = {
@@ -174,7 +174,7 @@ export const Profunctor: Profunctor2<URI> = {
 // -------------------------------------------------------------------------------------
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Combinators
  */
 export const premap =
@@ -190,7 +190,7 @@ export const premap =
     )
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Combinators
  */
 export const prefilter =
@@ -206,7 +206,7 @@ export const prefilter =
     )
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Combinators
  */
 export const take =
@@ -228,7 +228,7 @@ export const take =
     )
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Combinators
  */
 export function fold<F extends URIS>(
@@ -244,13 +244,13 @@ export function fold<F>(
 // pipeable sequence S
 // -------------------------------------------------------------------------------------
 
-/** @since 1.0.0 */
+/** @since 0.1.0 */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const Do: Fold<unknown, {}> =
   /*#__PURE__*/
   of({})
 
-/** @since 1.0.0 */
+/** @since 0.1.0 */
 export const apS = apS_(Apply)
 
 // -------------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ export const apS = apS_(Apply)
 // -------------------------------------------------------------------------------------
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Utilities
  */
 export const sum: Fold<number, number> = (run) =>
@@ -269,10 +269,10 @@ export const sum: Fold<number, number> = (run) =>
   })
 
 /**
- * @since 1.0.0
+ * @since 0.1.0
  * @category Utilities
  */
-export const length: Fold<number, number> = (run) =>
+export const length: Fold<unknown, number> = (run) =>
   run({
     step: (n, _) => n + 1,
     initial: 0,

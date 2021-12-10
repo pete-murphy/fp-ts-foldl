@@ -1,7 +1,7 @@
 {
   "name": "fp-ts-foldl",
-  "homepage": "N/A",
-  "version": "1.0.0",
+  "homepage": "https://github.com/ptrfrncsmrph/fp-ts-foldl",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "license": "MIT",
   "peerDependencies": {
