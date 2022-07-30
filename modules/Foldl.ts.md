@@ -16,6 +16,7 @@ Added in v0.1.0
   - [fold](#fold)
   - [prefilter](#prefilter)
   - [premap](#premap)
+  - [reduce](#reduce)
   - [take](#take)
 - [Instance operations](#instance-operations)
   - [map](#map)
@@ -66,6 +67,18 @@ Added in v0.1.0
 
 ```ts
 export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: Fold<B, R>) => Fold<A, R>
+```
+
+Added in v0.1.0
+
+## reduce
+
+**Signature**
+
+```ts
+export declare function reduce<F extends URIS>(
+  reduce_: Foldable1<F>['reduce']
+): <E, A>(f: Fold<E, A>) => (fa: Kind<F, E>) => A
 ```
 
 Added in v0.1.0
