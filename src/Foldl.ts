@@ -240,6 +240,19 @@ export function fold<F>(
   return (f) => (fa) => f((x) => x.extract(F.reduce(fa, x.initial, x.step)))
 }
 
+/**
+ * @since 0.1.0
+ * @category Combinators
+ */
+export function reduce<F extends URIS>(
+  reduce_: Foldable1<F>['reduce']
+): <E, A>(f: Fold<E, A>) => (fa: Kind<F, E>) => A
+export function reduce<F>(
+  reduce_: Foldable<F>['reduce']
+): <E, A>(f: Fold<E, A>) => (fa: HKT<F, E>) => A {
+  return (f) => (fa) => f((x) => x.extract(reduce_(fa, x.initial, x.step)))
+}
+
 // -------------------------------------------------------------------------------------
 // pipeable sequence S
 // -------------------------------------------------------------------------------------
