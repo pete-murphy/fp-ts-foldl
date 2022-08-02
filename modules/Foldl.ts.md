@@ -13,26 +13,35 @@ Added in v0.1.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Combinators](#combinators)
+  - [duplicate](#duplicate)
   - [fold](#fold)
+  - [foldFromReduce](#foldfromreduce)
   - [prefilter](#prefilter)
   - [premap](#premap)
-  - [reduce](#reduce)
   - [take](#take)
+- [Extend](#extend)
+  - [extend](#extend)
+- [Extract](#extract)
+  - [extract](#extract)
+- [Folds](#folds)
+  - [foldMap](#foldmap)
+  - [head](#head)
+  - [last](#last)
+  - [length](#length)
+  - [sum](#sum)
 - [Instance operations](#instance-operations)
   - [map](#map)
   - [of](#of)
 - [Instances](#instances)
   - [Applicative](#applicative)
   - [Apply](#apply)
+  - [Comonad](#comonad)
   - [Functor](#functor)
   - [Profunctor](#profunctor)
   - [URI](#uri)
   - [URI (type alias)](#uri-type-alias)
 - [Model](#model)
-  - [Fold (type alias)](#fold-type-alias)
-- [Utilities](#utilities)
-  - [length](#length)
-  - [sum](#sum)
+  - [Fold (interface)](#fold-interface)
 - [utils](#utils)
   - [Do](#do)
   - [apS](#aps)
@@ -40,6 +49,18 @@ Added in v0.1.0
 ---
 
 # Combinators
+
+## duplicate
+
+Derivable from `Extend`.
+
+**Signature**
+
+```ts
+export declare const duplicate: <E, A>(wa: Fold<E, A>) => Fold<E, Fold<E, A>>
+```
+
+Added in v0.3.0
 
 ## fold
 
@@ -50,6 +71,18 @@ export declare function fold<F extends URIS>(F: Foldable1<F>): <E, A>(f: Fold<E,
 ```
 
 Added in v0.1.0
+
+## foldFromReduce
+
+**Signature**
+
+```ts
+export declare function foldFromReduce<F extends URIS>(
+  reduce_: Foldable1<F>['reduce']
+): <E, A>(f: Fold<E, A>) => (fa: Kind<F, E>) => A
+```
+
+Added in v0.3.0
 
 ## prefilter
 
@@ -71,24 +104,88 @@ export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: Fold<B, R>) =>
 
 Added in v0.1.0
 
-## reduce
-
-**Signature**
-
-```ts
-export declare function reduce<F extends URIS>(
-  reduce_: Foldable1<F>['reduce']
-): <E, A>(f: Fold<E, A>) => (fa: Kind<F, E>) => A
-```
-
-Added in v0.1.0
-
 ## take
 
 **Signature**
 
 ```ts
 export declare const take: (n: number) => <E, A>(fea: Fold<E, A>) => Fold<E, A>
+```
+
+Added in v0.1.0
+
+# Extend
+
+## extend
+
+**Signature**
+
+```ts
+export declare const extend: <E, A, B>(f: (wa: Fold<E, A>) => B) => (wa: Fold<E, A>) => Fold<E, B>
+```
+
+Added in v0.3.0
+
+# Extract
+
+## extract
+
+**Signature**
+
+```ts
+export declare const extract: <E, A>(wa: Fold<E, A>) => A
+```
+
+Added in v0.3.0
+
+# Folds
+
+## foldMap
+
+**Signature**
+
+```ts
+export declare const foldMap: <M>(M: Monoid<M>) => <A, B>(to: (a: A) => M, from: (m: M) => B) => Fold<A, B>
+```
+
+Added in v0.3.0
+
+## head
+
+**Signature**
+
+```ts
+export declare const head: <A>() => Fold<A, O.Option<A>>
+```
+
+Added in v0.3.0
+
+## last
+
+**Signature**
+
+```ts
+export declare const last: <A>() => Fold<A, O.Option<A>>
+```
+
+Added in v0.3.0
+
+## length
+
+**Signature**
+
+```ts
+export declare const length: Fold<unknown, number>
+```
+
+Added in v0.1.0
+
+## sum
+
+**Signature**
+
+```ts
+export declare const sum: Fold<number, number>
 ```
 
 Added in v0.1.0
@@ -137,6 +234,16 @@ export declare const Apply: Apply2<'Fold'>
 
 Added in v0.1.0
 
+## Comonad
+
+**Signature**
+
+```ts
+export declare const Comonad: Comonad2<'Fold'>
+```
+
+Added in v0.3.0
+
 ## Functor
 
 **Signature**
@@ -179,34 +286,14 @@ Added in v0.1.0
 
 # Model
 
-## Fold (type alias)
+## Fold (interface)
 
 **Signature**
 
 ```ts
-export type Fold<E, A> = <R>(run: <X>(run: Fold_<X, E, A>) => R) => R
-```
-
-Added in v0.1.0
-
-# Utilities
-
-## length
-
-**Signature**
-
-```ts
-export declare const length: Fold<unknown, number>
-```
-
-Added in v0.1.0
-
-## sum
-
-**Signature**
-
-```ts
-export declare const sum: Fold<number, number>
+export interface Fold<E, A> {
+  <R>(run: <X>(run: Fold_<X, E, A>) => R): R
+}
 ```
 
 Added in v0.1.0
