@@ -2,6 +2,7 @@ import * as b from 'benny'
 import { pipe } from 'fp-ts/function'
 import { readonlyArray as RA } from 'fp-ts'
 import * as t from 'transducers-js'
+import * as R from 'ramda'
 
 import * as Funkia from 'list'
 import Immutable from 'immutable'
@@ -38,6 +39,15 @@ for (const n of Array(4)
       const actual = nsArray.map(inc).filter(isEven).reduce(sum)
       console.assert(actual === expected)
     }),
+    b.add('ramda', () => {
+      const actual = R.transduce(
+        R.compose(R.map(inc), R.filter(isEven)),
+        sum,
+        0,
+        nsArray
+      )
+      console.assert(actual === expected)
+    }),
     b.add('foldl', () => {
       const actual = pipe(
         nsArray,
@@ -66,6 +76,17 @@ for (const n of Array(4)
       const actual = nsImmutList.map(inc).filter(isEven).reduce(sum)
       console.assert(actual === expected)
     }),
+    b.add('ramda', () => {
+      const actual = R.transduce(
+        // @ts-ignore
+        R.compose(R.map(inc), R.filter(isEven)),
+        sum,
+        0,
+        // @ts-ignore
+        nsImmutList
+      )
+      console.assert(actual === expected)
+    }),
     b.add('foldl', () => {
       const actual = pipe(
         nsImmutList,
@@ -74,7 +95,8 @@ for (const n of Array(4)
           L.prefilter(isEven),
           L.premap(inc),
           L.foldFromReduce((fa, b, f) =>
-            (fa as Immutable.List<number>).reduce(f as any, b)
+            // @ts-ignore
+            fa.reduce(f, b)
           )
         )
       )
@@ -105,14 +127,27 @@ for (const n of Array(4)
       )
       console.assert(actual === expected)
     }),
+    b.add('ramda', () => {
+      const actual = R.transduce(
+        // @ts-ignore
+        R.compose(R.map(inc), R.filter(isEven)),
+        sum,
+        0,
+        // @ts-ignore
+        nsFunkiaList
+      )
+      console.assert(actual === expected)
+    }),
     b.add('foldl', () => {
       const actual = pipe(
-        nsFunkiaList as any,
+        // @ts-ignore
+        nsFunkiaList,
         pipe(
           L.sum,
           L.prefilter(isEven),
           L.premap(inc),
-          L.foldFromReduce((fa, b, f) => Funkia.reduce(f, b, fa as any))
+          // @ts-ignore
+          L.foldFromReduce((fa, b, f) => Funkia.reduce(f, b, fa))
         )
       )
       console.assert(actual === expected)
