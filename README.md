@@ -2,7 +2,7 @@
 
 ## Benchmarks
 
-Comparison with builtin/native methods and using [`transducers-js`](https://github.com/cognitect-labs/transducers-js) on various list types
+Comparison with using built-in/native methods, [`ramda`](https://github.com/ramda/ramda) and [`transducers-js`](https://github.com/cognitect-labs/transducers-js) on various list types
 
 `map`, `filter`, `sum` on an `Array` of 1,000,000 numbers
 ![array4 (2)](https://user-images.githubusercontent.com/26548438/182533139-3ab2d482-6d71-4f57-9775-08d57228837f.png)
