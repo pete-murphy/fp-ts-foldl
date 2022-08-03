@@ -5,13 +5,13 @@
 Comparison with builtin/native methods and using [`transducers-js`](https://github.com/cognitect-labs/transducers-js) on various list types
 
 `map`, `filter`, `sum` on an `Array` of 1,000,000 numbers
-![array4](https://user-images.githubusercontent.com/26548438/182519315-8e5093a8-25a2-4f2f-bcbb-088bc835ac19.png)
+![array4 (2)](https://user-images.githubusercontent.com/26548438/182533139-3ab2d482-6d71-4f57-9775-08d57228837f.png)
 
 `map`, `filter`, `sum` on an [`immutable/List`](https://github.com/immutable-js/immutable-js/) of 1,000,000 numbers
-![imm4](https://user-images.githubusercontent.com/26548438/182519309-410d30b7-e5f0-4a70-a540-f82f234afa00.png)
+![imm4 (1)](https://user-images.githubusercontent.com/26548438/182533186-6ee6dec8-90a9-4599-b67c-d7ae598e4656.png)
 
 `map`, `filter`, `sum` on a [`funkia/List`](https://github.com/funkia/list) of 1,000,000 numbers
-![funkia4](https://user-images.githubusercontent.com/26548438/182519313-20231c13-dbf1-4161-a0a7-23e4d17d83d5.png)
+![funkia4 (1)](https://user-images.githubusercontent.com/26548438/182533188-6672e3c9-da7f-4539-81ab-183c286615dd.png)
 
 
 ---
