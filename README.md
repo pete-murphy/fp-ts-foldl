@@ -1,8 +1,18 @@
 # fp-ts-foldl
 
-[![Test](http:&#x2F;&#x2F;&#x2F;actions&#x2F;workflows&#x2F;build.yml&#x2F;badge.svg)](http:&#x2F;&#x2F;&#x2F;actions&#x2F;workflows&#x2F;build.yml)
+## Benchmarks
 
-[API Docs]()
+Comparison with builtin/native methods and using [`transducers-js`](https://github.com/cognitect-labs/transducers-js) on various list types
+
+`map`, `filter`, `sum` on an `Array` of 1,000,000 numbers
+![array4](https://user-images.githubusercontent.com/26548438/182519315-8e5093a8-25a2-4f2f-bcbb-088bc835ac19.png)
+
+`map`, `filter`, `sum` on an [`immutable/List`](https://github.com/immutable-js/immutable-js/) of 1,000,000 numbers
+![imm4](https://user-images.githubusercontent.com/26548438/182519309-410d30b7-e5f0-4a70-a540-f82f234afa00.png)
+
+`map`, `filter`, `sum` on a [`funkia/List`](https://github.com/funkia/list) of 1,000,000 numbers
+![funkia4](https://user-images.githubusercontent.com/26548438/182519313-20231c13-dbf1-4161-a0a7-23e4d17d83d5.png)
+
 
 ---
 
