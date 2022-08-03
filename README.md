@@ -14,6 +14,10 @@ Comparison with using built-in/native methods, [`ramda`](https://github.com/ramd
 ![funkia4 (1)](https://user-images.githubusercontent.com/26548438/182533188-6672e3c9-da7f-4539-81ab-183c286615dd.png)
 
 
+## Can it bail-out early/short-circuit?
+
+Nope
+
 ---
 
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
