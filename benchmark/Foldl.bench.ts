@@ -78,11 +78,11 @@ for (const n of Array(4)
     }),
     b.add('ramda', () => {
       const actual = R.transduce(
-        // @ts-ignore
+        // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
         R.compose(R.map(inc), R.filter(isEven)),
         sum,
         0,
-        // @ts-ignore
+        // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
         nsImmutList
       )
       console.assert(actual === expected)
@@ -95,7 +95,7 @@ for (const n of Array(4)
           L.prefilter(isEven),
           L.premap(inc),
           L.foldFromReduce((fa, b, f) =>
-            // @ts-ignore
+            // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
             fa.reduce(f, b)
           )
         )
@@ -129,24 +129,24 @@ for (const n of Array(4)
     }),
     b.add('ramda', () => {
       const actual = R.transduce(
-        // @ts-ignore
+        // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
         R.compose(R.map(inc), R.filter(isEven)),
         sum,
         0,
-        // @ts-ignore
+        // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
         nsFunkiaList
       )
       console.assert(actual === expected)
     }),
     b.add('foldl', () => {
       const actual = pipe(
-        // @ts-ignore
+        // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
         nsFunkiaList,
         pipe(
           L.sum,
           L.prefilter(isEven),
           L.premap(inc),
-          // @ts-ignore
+          // @ts-expect-error: Allow loose typings for benchmarks that interop with non-`fp-ts` libraries
           L.foldFromReduce((fa, b, f) => Funkia.reduce(f, b, fa))
         )
       )
