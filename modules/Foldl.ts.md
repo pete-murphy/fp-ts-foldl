@@ -45,6 +45,8 @@ Added in v0.1.0
   - [URI (type alias)](#uri-type-alias)
 - [Model](#model)
   - [Fold (interface)](#fold-interface)
+- [Utilities](#utilities)
+  - [foldArray](#foldarray)
 - [utils](#utils)
   - [Do](#do)
   - [apS](#aps)
@@ -61,7 +63,7 @@ Derivable from `Extend`.
 **Signature**
 
 ```ts
-export declare const duplicate: <E, A>(wa: Fold<E, A>) => Fold<E, Fold<E, A>>
+export declare const duplicate: <E, A>(wa: any) => any
 ```
 
 Added in v0.3.0
@@ -93,7 +95,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const prefilter: <A>(predicate: Predicate<A>) => <R>(fold_: Fold<A, R>) => Fold<A, R>
+export declare const prefilter: <A>(predicate: Predicate<A>) => <R>(fold_: any) => any
 ```
 
 Added in v0.1.0
@@ -103,7 +105,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: Fold<B, R>) => Fold<A, R>
+export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: any) => any
 ```
 
 Added in v0.1.0
@@ -113,7 +115,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const take: (n: number) => <E, A>(fea: Fold<E, A>) => Fold<E, A>
+export declare const take: (n: number) => <E, A>(fea: any) => any
 ```
 
 Added in v0.1.0
@@ -125,7 +127,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const extend: <E, A, B>(f: (wa: Fold<E, A>) => B) => (wa: Fold<E, A>) => Fold<E, B>
+export declare const extend: <E, A, B>(f: (wa: any) => B) => (wa: any) => any
 ```
 
 Added in v0.3.0
@@ -137,7 +139,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const extract: <E, A>(wa: Fold<E, A>) => A
+export declare const extract: <E, A>(wa: any) => A
 ```
 
 Added in v0.3.0
@@ -149,7 +151,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const foldMap: <M>(M: Monoid<M>) => <A, B>(to: (a: A) => M, from: (m: M) => B) => Fold<A, B>
+export declare const foldMap: <M>(M: Monoid<M>) => <A, B>(to: (a: A) => M, from: (m: M) => B) => any
 ```
 
 Added in v0.3.0
@@ -159,7 +161,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const head: <A>() => Fold<A, O.Option<A>>
+export declare const head: <A>() => any
 ```
 
 Added in v0.3.0
@@ -169,7 +171,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const last: <A>() => Fold<A, O.Option<A>>
+export declare const last: <A>() => any
 ```
 
 Added in v0.3.0
@@ -179,7 +181,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const length: Fold<unknown, number>
+export declare const length: any
 ```
 
 Added in v0.1.0
@@ -189,7 +191,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const mean: Fold<number, number>
+export declare const mean: any
 ```
 
 Added in v0.3.0
@@ -199,7 +201,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const std: Fold<number, number>
+export declare const std: any
 ```
 
 Added in v0.3.0
@@ -209,7 +211,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const sum: Fold<number, number>
+export declare const sum: any
 ```
 
 Added in v0.1.0
@@ -219,7 +221,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const variance: Fold<number, number>
+export declare const variance: any
 ```
 
 Added in v0.3.0
@@ -231,7 +233,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: Fold<E, A>) => Fold<E, B>
+export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: any) => any
 ```
 
 Added in v0.1.0
@@ -241,7 +243,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const of: <E = never, A = never>(a: A) => Fold<E, A>
+export declare const of: <E = never, A = never>(a: A) => any
 ```
 
 Added in v0.1.0
@@ -325,12 +327,82 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export interface Fold<E, A> {
-  <R>(run: <X>(run: Fold_<X, E, A>) => R): R
-}
+export interface Fold<
 ```
 
 Added in v0.1.0
+
+# Utilities
+
+## foldArray
+
+**Signature**
+
+```ts
+export declare function foldArray<A, Out>(a: Fold<A, Out>): (_: ReadonlyArray<A>) => Out
+export declare function foldArray<A, A_, B, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, Out>
+): (_: ReadonlyArray<B>) => Out
+export declare function foldArray<A, A_, B, B_, C, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, Out>
+): (_: ReadonlyArray<C>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, Out>
+): (_: ReadonlyArray<D>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, D_, E, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, Out>
+): (_: ReadonlyArray<E>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, Out>
+): (_: ReadonlyArray<F>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, Out>
+): (_: ReadonlyArray<G>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, G_, H, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, G_>,
+  gh: (f: Fold<G, G_>) => Fold<H, Out>
+): (_: ReadonlyArray<H>) => Out
+export declare function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, G_, H, H_, I, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, G_>,
+  gh: (f: Fold<G, G_>) => Fold<H, H_>,
+  hi: (f: Fold<H, H_>) => Fold<I, Out>
+): (_: ReadonlyArray<H>) => Out
+```
+
+Added in v0.3.2
 
 # utils
 
@@ -339,7 +411,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const Do: Fold<unknown, {}>
+export declare const Do: any
 ```
 
 Added in v0.1.0
@@ -349,10 +421,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const apS: <N, A, E, B>(
-  name: Exclude<N, keyof A>,
-  fb: Fold<E, B>
-) => (fa: Fold<E, A>) => Fold<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+export declare const apS: <N, A, E, B>(name: Exclude<N, keyof A>, fb: any) => (fa: any) => any
 ```
 
 Added in v0.1.0
@@ -366,10 +435,7 @@ The `W` suffix (short for **W**idening) means that the error types will be merge
 **Signature**
 
 ```ts
-export declare const apSW: <A, N extends string, R2, B>(
-  name: Exclude<N, keyof A>,
-  fb: Fold<R2, B>
-) => <R1>(fa: Fold<R1, A>) => Fold<R1 & R2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+export declare const apSW: <A, N extends string, R2, B>(name: Exclude<N, keyof A>, fb: any) => <R1>(fa: any) => any
 ```
 
 Added in v0.3.0
