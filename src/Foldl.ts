@@ -12,13 +12,14 @@ import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
 import { Profunctor2 } from 'fp-ts/Profunctor'
 import Option = O.Option
+import * as RA from 'fp-ts/ReadonlyArray'
 
 // -------------------------------------------------------------------------------------
 // model
 // -------------------------------------------------------------------------------------
 
 /** @internal */
-interface Fold_<X, E, A> {
+interface Fold_<in out X, in E, out A> {
   readonly step: (x: X, e: E) => X
   readonly begin: X
   readonly done: (x: X) => A
@@ -28,7 +29,7 @@ interface Fold_<X, E, A> {
  * @since 0.1.0
  * @category Model
  */
-export interface Fold<E, A> {
+export interface Fold<in E, out A> {
   <R>(run: <X>(run: Fold_<X, E, A>) => R): R
 }
 
@@ -475,3 +476,123 @@ export const variance: Fold<number, number> = (run) =>
  * @category Folds
  */
 export const std = map(Math.sqrt)(variance)
+
+
+// -------------------------------------------------------------------------------------
+// utilities
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 0.3.2
+ * @category Utilities
+ */
+export function foldArray<A, Out>(
+  a: Fold<A, Out>
+): (_: ReadonlyArray<A>) => Out;
+export function foldArray<A, A_, B, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, Out>
+): (_: ReadonlyArray<B>) => Out;
+export function foldArray<A, A_, B, B_, C, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, Out>
+): (_: ReadonlyArray<C>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, Out>
+): (_: ReadonlyArray<D>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, D_, E, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, Out>
+): (_: ReadonlyArray<E>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, Out>
+): (_: ReadonlyArray<F>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, Out>
+): (_: ReadonlyArray<G>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, G_, H, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, G_>,
+  gh: (f: Fold<G, G_>) => Fold<H, Out>
+): (_: ReadonlyArray<H>) => Out;
+export function foldArray<A, A_, B, B_, C, C_, D, D_, E, E_, F, F_, G, G_, H, H_, I, Out>(
+  a: Fold<A, A_>,
+  ab: (a: Fold<A, A_>) => Fold<B, B_>,
+  bc: (b: Fold<B, B_>) => Fold<C, C_>,
+  cd: (c: Fold<C, C_>) => Fold<D, D_>,
+  de: (d: Fold<D, D_>) => Fold<E, E_>,
+  ef: (e: Fold<E, E_>) => Fold<F, F_>,
+  fg: (f: Fold<F, F_>) => Fold<G, G_>,
+  gh: (f: Fold<G, G_>) => Fold<H, H_>,
+  hi: (f: Fold<H, H_>) => Fold<I, Out>
+): (_: ReadonlyArray<H>) => Out;
+/* eslint-disable prefer-rest-params */
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+export function foldArray(
+  a: unknown,
+  ab?: Function,
+  bc?: Function,
+  cd?: Function,
+  de?: Function,
+  ef?: Function,
+  fg?: Function,
+  gh?: Function,
+  hi?: Function
+): unknown {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const f: any = fold(RA.Foldable);
+  switch (arguments.length) {
+    case 1:
+      return f(a);
+    case 2:
+      return f(ab!(a));
+    case 3:
+      return f(bc!(ab!(a)));
+    case 4:
+      return f(cd!(bc!(ab!(a))));
+    case 5:
+      return f(de!(cd!(bc!(ab!(a)))));
+    case 6:
+      return f(ef!(de!(cd!(bc!(ab!(a))))));
+    case 7:
+      return f(fg!(ef!(de!(cd!(bc!(ab!(a)))))));
+    case 8:
+      return f(gh!(fg!(ef!(de!(cd!(bc!(ab!(a))))))));
+    case 9:
+      return f(hi!(gh!(fg!(ef!(de!(cd!(bc!(ab!(a)))))))));
+    default: {
+      let ret = arguments[0];
+      for (let i = 1; i < arguments.length; i++) {
+        ret = arguments[i](ret);
+      }
+      return f(ret);
+    }
+  }
+}
+/* eslint-enable prefer-rest-params */
+/* eslint-enable @typescript-eslint/ban-types */
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
