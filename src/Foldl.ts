@@ -4,7 +4,7 @@ import { Apply2, apS as apS_ } from 'fp-ts/Apply'
 import { Comonad2 } from 'fp-ts/Comonad'
 import { Extend2 } from 'fp-ts/Extend'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
-import { absurd, flow, identity, pipe, tuple } from 'fp-ts/function'
+import { flow, identity, pipe, tuple } from 'fp-ts/function'
 import { Functor2 } from 'fp-ts/Functor'
 import { HKT, Kind, URIS } from 'fp-ts/HKT'
 import { Monoid } from 'fp-ts/Monoid'
@@ -139,8 +139,8 @@ export const Apply: Apply2<URI> = {
 export const of =
   <E = never, A = never>(a: A): Fold<E, A> =>
   (run) =>
-    run<never>({
-      step: absurd,
+    run({
+      step: identity,
       begin: undefined as never,
       done: () => a,
     })
