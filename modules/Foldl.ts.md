@@ -28,7 +28,9 @@ Added in v0.1.0
   - [head](#head)
   - [last](#last)
   - [length](#length)
+  - [maximum](#maximum)
   - [mean](#mean)
+  - [minimum](#minimum)
   - [std](#std)
   - [sum](#sum)
   - [variance](#variance)
@@ -186,6 +188,16 @@ export declare const length: any
 
 Added in v0.1.0
 
+## maximum
+
+**Signature**
+
+```ts
+export declare const maximum: <A>(OrdA: Ord.Ord<A>) => any
+```
+
+Added in v0.3.5
+
 ## mean
 
 **Signature**
@@ -195,6 +207,16 @@ export declare const mean: any
 ```
 
 Added in v0.3.0
+
+## minimum
+
+**Signature**
+
+```ts
+export declare const minimum: <A>(OrdA: Ord.Ord<A>) => any
+```
+
+Added in v0.3.5
 
 ## std
 
