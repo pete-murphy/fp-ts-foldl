@@ -28,7 +28,10 @@ Added in v0.1.0
   - [head](#head)
   - [last](#last)
   - [length](#length)
+  - [mean](#mean)
+  - [std](#std)
   - [sum](#sum)
+  - [variance](#variance)
 - [Instance operations](#instance-operations)
   - [map](#map)
   - [of](#of)
@@ -45,6 +48,7 @@ Added in v0.1.0
 - [utils](#utils)
   - [Do](#do)
   - [apS](#aps)
+  - [apSW](#apsw)
 
 ---
 
@@ -180,6 +184,26 @@ export declare const length: Fold<unknown, number>
 
 Added in v0.1.0
 
+## mean
+
+**Signature**
+
+```ts
+export declare const mean: Fold<number, number>
+```
+
+Added in v0.3.0
+
+## std
+
+**Signature**
+
+```ts
+export declare const std: Fold<number, number>
+```
+
+Added in v0.3.0
+
 ## sum
 
 **Signature**
@@ -189,6 +213,16 @@ export declare const sum: Fold<number, number>
 ```
 
 Added in v0.1.0
+
+## variance
+
+**Signature**
+
+```ts
+export declare const variance: Fold<number, number>
+```
+
+Added in v0.3.0
 
 # Instance operations
 
@@ -322,3 +356,20 @@ export declare const apS: <N, A, E, B>(
 ```
 
 Added in v0.1.0
+
+## apSW
+
+Less strict version of [`apS`](#aps).
+
+The `W` suffix (short for **W**idening) means that the error types will be merged.
+
+**Signature**
+
+```ts
+export declare const apSW: <A, N extends string, R2, B>(
+  name: Exclude<N, keyof A>,
+  fb: Fold<R2, B>
+) => <R1>(fa: Fold<R1, A>) => Fold<R1 & R2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+```
+
+Added in v0.3.0
