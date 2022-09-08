@@ -486,7 +486,7 @@ export const minimum = <A>(OrdA: Ord.Ord<A>): Fold<A, Option<A>> => {
   const min = Ord.min(O.getOrd(OrdA))
   return run => run({
     begin: O.none as Option<A>,
-    step: (mx, a) => min(mx, O.some(a)),
+    step: (mx, a) => O.isNone(mx) ? O.some(a) : min(mx, O.some(a)),
     done: identity
   })
 }
