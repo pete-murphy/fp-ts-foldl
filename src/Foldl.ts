@@ -20,7 +20,7 @@ import Option = O.Option
 /** @internal */
 interface Fold_<X, E, A> {
   readonly step: (x: X, e: E) => X
-  readonly initial: X
+  readonly begin: X
   readonly done: (x: X) => A
 }
 
@@ -72,7 +72,7 @@ export const map =
   <A, B>(f: (a: A) => B) =>
   <E>(fa: Fold<E, A>): Fold<E, B> =>
   (run) =>
-    fa((a) => run({ step: a.step, initial: a.initial, done: flow(a.done, f) }))
+    fa((a) => run({ step: a.step, begin: a.begin, done: flow(a.done, f) }))
 
 /**
  * @since 0.1.0
@@ -96,20 +96,19 @@ const apW =
     fab((left) =>
       fa((right) => {
         const step = (
-          x: readonly [typeof left.initial, typeof right.initial],
+          x: readonly [typeof left.begin, typeof right.begin],
           a: E1 & E2
         ) => tuple(left.step(x[0], a), right.step(x[1], a))
 
-        const initial = tuple(left.initial, right.initial)
+        const begin = tuple(left.begin, right.begin)
 
-        const extract = (
-          x: readonly [typeof left.initial, typeof right.initial]
-        ) => left.done(x[0])(right.done(x[1]))
+        const done = (x: readonly [typeof left.begin, typeof right.begin]) =>
+          left.done(x[0])(right.done(x[1]))
 
         return run({
           step,
-          initial,
-          done: extract,
+          begin,
+          done,
         })
       })
     )
@@ -141,7 +140,7 @@ export const of =
   (run) =>
     run<never>({
       step: absurd,
-      initial: undefined as never,
+      begin: undefined as never,
       done: () => a,
     })
 
@@ -185,9 +184,9 @@ export const extend: <E, A, B>(
   wa((b) =>
     run({
       step: b.step,
-      initial: b.initial,
+      begin: b.begin,
       done: (x) =>
-        f((fold_) => fold_({ step: b.step, initial: x, done: b.done })),
+        f((fold_) => fold_({ step: b.step, begin: x, done: b.done })),
     })
   )
 
@@ -196,7 +195,7 @@ export const extend: <E, A, B>(
  * @category Extract
  */
 export const extract: <E, A>(wa: Fold<E, A>) => A = (wa) =>
-  wa((run) => run.done(run.initial))
+  wa((run) => run.done(run.begin))
 
 /**
  * @since 0.3.0
@@ -208,6 +207,44 @@ export const Comonad: Comonad2<URI> = {
   extend: _extend,
   extract,
 }
+
+// /**
+//  * @since 0.3.0
+//  * @category Choice
+//  */
+// export const right: Choice2<URI>['right'] = (pbc) => (run) =>
+//   pbc((bc) =>
+//     run({
+//       done: E.map(bc.done),
+//       begin: E.right(bc.begin),
+//       step: (ea, eb) =>
+//         pipe(
+//           ea,
+//           E.map((a) => (b: any) => bc.step(a, b)),
+//           E.ap(eb) as any
+//         ),
+//     })
+//   )
+
+// /**
+//  * @since 0.3.0
+//  * @category Choice
+//  */
+// export const left: Choice2<URI>['left'] = (pab) => (run) =>
+//   pab((ab) =>
+//     run({
+//       done: E.mapLeft(ab.done),
+//       begin: E.left(ab.begin),
+//       step: (ea, eb) =>
+//         pipe(
+//           ea,
+//           E.swap,
+//           E.map((a) => (b: any) => ab.step(a, b)),
+//           E.ap(eb) as any,
+//           E.swap as any
+//         ),
+//     })
+//   )
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -234,7 +271,7 @@ export const premap =
     fold_((b) =>
       run({
         step: (x, y) => b.step(x, f(y)),
-        initial: b.initial,
+        begin: b.begin,
         done: b.done,
       })
     )
@@ -250,7 +287,7 @@ export const prefilter =
     fold_((a) =>
       run({
         step: (x, y) => (predicate(y) ? a.step(x, y) : x),
-        initial: a.initial,
+        begin: a.begin,
         done: a.done,
       })
     )
@@ -266,13 +303,13 @@ export const take =
     fea((ea) =>
       run({
         step: (
-          acc: { readonly length: number; readonly x: typeof ea.initial },
+          acc: { readonly length: number; readonly x: typeof ea.begin },
           e: E
         ) =>
           acc.length < n
             ? { length: acc.length + 1, x: ea.step(acc.x, e) }
             : acc,
-        initial: { length: 0, x: ea.initial },
+        begin: { length: 0, x: ea.begin },
         done: ({ x }) => ea.done(x),
       })
     )
@@ -287,7 +324,7 @@ export function fold<F extends URIS>(
 export function fold<F>(
   F: Foldable<F>
 ): <E, A>(f: Fold<E, A>) => (fa: HKT<F, E>) => A {
-  return (f) => (fa) => f((x) => x.done(F.reduce(fa, x.initial, x.step)))
+  return (f) => (fa) => f((x) => x.done(F.reduce(fa, x.begin, x.step)))
 }
 
 /**
@@ -300,7 +337,7 @@ export function foldFromReduce<F extends URIS>(
 export function foldFromReduce<F>(
   reduce_: Foldable<F>['reduce']
 ): <E, A>(f: Fold<E, A>) => (fa: HKT<F, E>) => A {
-  return (f) => (fa) => f((x) => x.done(reduce_(fa, x.initial, x.step)))
+  return (f) => (fa) => f((x) => x.done(reduce_(fa, x.begin, x.step)))
 }
 
 // -------------------------------------------------------------------------------------
@@ -316,6 +353,22 @@ export const Do: Fold<unknown, {}> =
 /** @since 0.1.0 */
 export const apS = apS_(Apply)
 
+/**
+ * Less strict version of [`apS`](#aps).
+ *
+ * The `W` suffix (short for **W**idening) means that the error types will be merged.
+ *
+ * @since 0.3.0
+ */
+export const apSW: <A, N extends string, R2, B>(
+  name: Exclude<N, keyof A>,
+  fb: Fold<R2, B>
+) => <R1>(fa: Fold<R1, A>) => Fold<
+  R1 & R2,
+  { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+> = apS as any
+
 // -------------------------------------------------------------------------------------
 // folds
 // -------------------------------------------------------------------------------------
@@ -330,7 +383,7 @@ export const foldMap =
   (run) =>
     run({
       step: (m, a) => M.concat(m, to(a)),
-      initial: M.empty,
+      begin: M.empty,
       done: from,
     })
 
@@ -347,7 +400,7 @@ export const head =
           mx,
           O.alt(() => O.some(a))
         ),
-      initial: O.none as Option<A>,
+      begin: O.none as Option<A>,
       done: identity,
     })
 
@@ -360,7 +413,7 @@ export const last =
   (run) =>
     run({
       step: (_, a) => O.some(a),
-      initial: O.none as Option<A>,
+      begin: O.none as Option<A>,
       done: identity,
     })
 
@@ -371,7 +424,7 @@ export const last =
 export const sum: Fold<number, number> = (run) =>
   run({
     step: (x, y) => x + y,
-    initial: 0,
+    begin: 0,
     done: identity,
   })
 
@@ -382,6 +435,43 @@ export const sum: Fold<number, number> = (run) =>
 export const length: Fold<unknown, number> = (run) =>
   run({
     step: (n, _) => n + 1,
-    initial: 0,
+    begin: 0,
     done: identity,
   })
+
+/**
+ * @since 0.3.0
+ * @category Folds
+ */
+export const mean: Fold<number, number> = (run) =>
+  run({
+    begin: [0, 0] as readonly [number, number],
+    step: ([x, n], y) => {
+      const n_ = n + 1
+      return [x + (y - x) / n_, n_] as const
+    },
+    done: ([x, _]) => x,
+  })
+
+/**
+ * @since 0.3.0
+ * @category Folds
+ */
+export const variance: Fold<number, number> = (run) =>
+  run({
+    begin: [0, 0, 0] as readonly [number, number, number],
+    step: ([n, mean, m2], x) => {
+      const n_ = n + 1
+      const mean_ = (n * mean + x) / (n + 1)
+      const delta = x - mean
+      const m2_ = m2 + (delta * delta * n) / (n + 1)
+      return [n_, mean_, m2_] as const
+    },
+    done: ([n, _, m2]) => m2 / n,
+  })
+
+/**
+ * @since 0.3.0
+ * @category Folds
+ */
+export const std = map(Math.sqrt)(variance)
