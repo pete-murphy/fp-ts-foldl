@@ -9,6 +9,7 @@ import { Functor2 } from 'fp-ts/Functor'
 import { HKT, Kind, URIS } from 'fp-ts/HKT'
 import { Monoid } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
+import * as Ord from 'fp-ts/Ord'
 import { Predicate } from 'fp-ts/Predicate'
 import { Profunctor2 } from 'fp-ts/Profunctor'
 import Option = O.Option
@@ -477,6 +478,31 @@ export const variance: Fold<number, number> = (run) =>
  */
 export const std = map(Math.sqrt)(variance)
 
+/**
+ * @since 0.3.5
+ * @category Folds
+ */
+export const minimum = <A>(OrdA: Ord.Ord<A>): Fold<A, Option<A>> => {
+  const min = Ord.min(O.getOrd(OrdA))
+  return run => run({
+    begin: O.none as Option<A>,
+    step: (mx, a) => min(mx, O.some(a)),
+    done: identity
+  })
+}
+
+/**
+ * @since 0.3.5
+ * @category Folds
+ */
+export const maximum = <A>(OrdA: Ord.Ord<A>): Fold<A, Option<A>> => {
+  const max = Ord.max(O.getOrd(OrdA))
+  return run => run({
+    begin: O.none as Option<A>,
+    step: (mx, a) => max(mx, O.some(a)),
+    done: identity
+  })
+}
 
 // -------------------------------------------------------------------------------------
 // utilities
