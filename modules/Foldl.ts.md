@@ -18,6 +18,7 @@ Added in v0.1.0
   - [foldFromReduce](#foldfromreduce)
   - [prefilter](#prefilter)
   - [premap](#premap)
+  - [struct](#struct)
   - [take](#take)
 - [Extend](#extend)
   - [extend](#extend)
@@ -113,6 +114,16 @@ export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: any) => any
 ```
 
 Added in v0.1.0
+
+## struct
+
+**Signature**
+
+```ts
+export declare const struct: <E, NER>(r: (keyof NER extends never ? never : NER) & Record<string, any>) => any
+```
+
+Added in v0.3.9
 
 ## take
 
