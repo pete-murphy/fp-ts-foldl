@@ -26,7 +26,9 @@ Added in v0.1.0
 - [Folds](#folds)
   - [foldMap](#foldmap)
   - [head](#head)
+  - [headOrElse](#headorelse)
   - [last](#last)
+  - [lastOrElse](#lastorelse)
   - [length](#length)
   - [maximum](#maximum)
   - [mean](#mean)
@@ -168,6 +170,16 @@ export declare const head: <A>() => any
 
 Added in v0.3.0
 
+## headOrElse
+
+**Signature**
+
+```ts
+export declare const headOrElse: <A>(onEmpty: Lazy<A>) => any
+```
+
+Added in v0.3.8
+
 ## last
 
 **Signature**
@@ -177,6 +189,16 @@ export declare const last: <A>() => any
 ```
 
 Added in v0.3.0
+
+## lastOrElse
+
+**Signature**
+
+```ts
+export declare const lastOrElse: <A>(onEmpty: Lazy<A>) => any
+```
+
+Added in v0.3.8
 
 ## length
 
