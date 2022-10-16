@@ -4,7 +4,7 @@ import { Apply2, apS as apS_ } from 'fp-ts/Apply'
 import { Comonad2 } from 'fp-ts/Comonad'
 import { Extend2 } from 'fp-ts/Extend'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
-import { flow, identity, pipe, tuple } from 'fp-ts/function'
+import { flow, identity, Lazy, pipe, tuple } from 'fp-ts/function'
 import { Functor2 } from 'fp-ts/Functor'
 import { HKT, Kind, URIS } from 'fp-ts/HKT'
 import { Monoid } from 'fp-ts/Monoid'
@@ -407,6 +407,23 @@ export const head =
     })
 
 /**
+ * @since 0.3.8
+ * @category Folds
+ */
+export const headOrElse =
+  <A>(onEmpty: Lazy<A>): Fold<A, A> =>
+  (run) =>
+    run({
+      step: (mx, a) =>
+        pipe(
+          mx,
+          O.alt(() => O.some(a))
+        ),
+      begin: O.none as Option<A>,
+      done: O.getOrElse(onEmpty),
+    })
+
+/**
  * @since 0.3.0
  * @category Folds
  */
@@ -418,6 +435,20 @@ export const last =
       begin: O.none as Option<A>,
       done: identity,
     })
+
+/**
+ * @since 0.3.8
+ * @category Folds
+ */
+export const lastOrElse =
+  <A>(onEmpty: Lazy<A>): Fold<A, A> =>
+  (run) =>
+    run({
+      step: (_, a) => O.some(a),
+      begin: O.none as Option<A>,
+      done: O.getOrElse(onEmpty),
+    })
+
 
 /**
  * @since 0.1.0

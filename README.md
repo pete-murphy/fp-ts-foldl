@@ -202,7 +202,7 @@ pipe(
 
 ## Benchmarks
 
-`foldl` performs favorably against transducer implementations in [`ramda`](https://github.com/ramda/ramda) and [`transducers-js`](https://github.com/cognitect-labs/transducers-js) in the [following benchmarks](./benchmark)
+`foldl` performs favorably against transducer implementations in [`ramda`](https://github.com/ramda/ramda) and [`transducers-js`](https://github.com/cognitect-labs/transducers-js) in the [following benchmarks](./benchmark). (Note that this library does not support early termination, unlike most transducer implementations, so will perform much worse in cases where that's a requirement. See: https://github.com/Gabriella439/foldl/issues/85.)
 
 `map`, `filter`, `sum` on an `Array` of 1,000,000 numbers
 ![array4 (2)](https://user-images.githubusercontent.com/26548438/182533139-3ab2d482-6d71-4f57-9775-08d57228837f.png)
