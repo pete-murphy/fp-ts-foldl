@@ -68,7 +68,7 @@ Derivable from `Extend`.
 **Signature**
 
 ```ts
-export declare const duplicate: <E, A>(wa: any) => any
+export declare const duplicate: <E, A>(wa: Fold<E, A>) => Fold<E, Fold<E, A>>
 ```
 
 Added in v0.3.0
@@ -100,7 +100,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const prefilter: <A>(predicate: Predicate<A>) => <R>(fold_: any) => any
+export declare const prefilter: <A>(predicate: Predicate<A>) => <R>(fold_: Fold<A, R>) => Fold<A, R>
 ```
 
 Added in v0.1.0
@@ -110,7 +110,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: any) => any
+export declare const premap: <A, B>(f: (a: A) => B) => <R>(fold_: Fold<B, R>) => Fold<A, R>
 ```
 
 Added in v0.1.0
@@ -120,7 +120,9 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const struct: <E, NER>(r: (keyof NER extends never ? never : NER) & Record<string, any>) => any
+export declare const struct: <E, NER>(
+  r: (keyof NER extends never ? never : NER) & Record<string, Fold<E, any>>
+) => Fold<E, { [K in keyof NER]: [NER[K]] extends [Fold<any, infer A>] ? A : never }>
 ```
 
 Added in v0.3.9
@@ -130,7 +132,7 @@ Added in v0.3.9
 **Signature**
 
 ```ts
-export declare const take: (n: number) => <E, A>(fea: any) => any
+export declare const take: (n: number) => <E, A>(fea: Fold<E, A>) => Fold<E, A>
 ```
 
 Added in v0.1.0
@@ -142,7 +144,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const extend: <E, A, B>(f: (wa: any) => B) => (wa: any) => any
+export declare const extend: <E, A, B>(f: (wa: Fold<E, A>) => B) => (wa: Fold<E, A>) => Fold<E, B>
 ```
 
 Added in v0.3.0
@@ -154,7 +156,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const extract: <E, A>(wa: any) => A
+export declare const extract: <E, A>(wa: Fold<E, A>) => A
 ```
 
 Added in v0.3.0
@@ -166,7 +168,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const foldMap: <M>(M: Monoid<M>) => <A, B>(to: (a: A) => M, from: (m: M) => B) => any
+export declare const foldMap: <M>(M: Monoid<M>) => <A, B>(to: (a: A) => M, from: (m: M) => B) => Fold<A, B>
 ```
 
 Added in v0.3.0
@@ -176,7 +178,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const head: <A>() => any
+export declare const head: <A>() => Fold<A, O.Option<A>>
 ```
 
 Added in v0.3.0
@@ -186,7 +188,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const headOrElse: <A>(onEmpty: Lazy<A>) => any
+export declare const headOrElse: <A>(onEmpty: Lazy<A>) => Fold<A, A>
 ```
 
 Added in v0.3.8
@@ -196,7 +198,7 @@ Added in v0.3.8
 **Signature**
 
 ```ts
-export declare const last: <A>() => any
+export declare const last: <A>() => Fold<A, O.Option<A>>
 ```
 
 Added in v0.3.0
@@ -206,7 +208,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const lastOrElse: <A>(onEmpty: Lazy<A>) => any
+export declare const lastOrElse: <A>(onEmpty: Lazy<A>) => Fold<A, A>
 ```
 
 Added in v0.3.8
@@ -216,7 +218,7 @@ Added in v0.3.8
 **Signature**
 
 ```ts
-export declare const length: any
+export declare const length: Fold<unknown, number>
 ```
 
 Added in v0.1.0
@@ -226,7 +228,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const maximum: <A>(OrdA: Ord.Ord<A>) => any
+export declare const maximum: <A>(OrdA: Ord.Ord<A>) => Fold<A, O.Option<A>>
 ```
 
 Added in v0.3.5
@@ -236,7 +238,7 @@ Added in v0.3.5
 **Signature**
 
 ```ts
-export declare const mean: any
+export declare const mean: Fold<number, number>
 ```
 
 Added in v0.3.0
@@ -246,7 +248,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const minimum: <A>(OrdA: Ord.Ord<A>) => any
+export declare const minimum: <A>(OrdA: Ord.Ord<A>) => Fold<A, O.Option<A>>
 ```
 
 Added in v0.3.5
@@ -256,7 +258,7 @@ Added in v0.3.5
 **Signature**
 
 ```ts
-export declare const std: any
+export declare const std: Fold<number, number>
 ```
 
 Added in v0.3.0
@@ -266,7 +268,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const sum: any
+export declare const sum: Fold<number, number>
 ```
 
 Added in v0.1.0
@@ -276,7 +278,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const variance: any
+export declare const variance: Fold<number, number>
 ```
 
 Added in v0.3.0
@@ -288,7 +290,7 @@ Added in v0.3.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: any) => any
+export declare const map: <A, B>(f: (a: A) => B) => <E>(fa: Fold<E, A>) => Fold<E, B>
 ```
 
 Added in v0.1.0
@@ -298,7 +300,7 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const of: <E = never, A = never>(a: A) => any
+export declare const of: <E = never, A = never>(a: A) => Fold<E, A>
 ```
 
 Added in v0.1.0
@@ -382,7 +384,9 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export interface Fold<
+export interface Fold<E, A> {
+  <R>(run: <X>(run: Fold_<X, E, A>) => R): R
+}
 ```
 
 Added in v0.1.0
@@ -466,7 +470,7 @@ Added in v0.3.2
 **Signature**
 
 ```ts
-export declare const Do: any
+export declare const Do: Fold<unknown, {}>
 ```
 
 Added in v0.1.0
@@ -476,7 +480,10 @@ Added in v0.1.0
 **Signature**
 
 ```ts
-export declare const apS: <N, A, E, B>(name: Exclude<N, keyof A>, fb: any) => (fa: any) => any
+export declare const apS: <N, A, E, B>(
+  name: Exclude<N, keyof A>,
+  fb: Fold<E, B>
+) => (fa: Fold<E, A>) => Fold<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v0.1.0
@@ -490,7 +497,10 @@ The `W` suffix (short for **W**idening) means that the error types will be merge
 **Signature**
 
 ```ts
-export declare const apSW: <A, N extends string, R2, B>(name: Exclude<N, keyof A>, fb: any) => <R1>(fa: any) => any
+export declare const apSW: <A, N extends string, R2, B>(
+  name: Exclude<N, keyof A>,
+  fb: Fold<R2, B>
+) => <R1>(fa: Fold<R1, A>) => Fold<R1 & R2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v0.3.0
