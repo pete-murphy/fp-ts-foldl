@@ -1,6 +1,6 @@
 /** @since 0.1.0 */
 import { Applicative2 } from 'fp-ts/Applicative'
-import { Apply2, apS as apS_ } from 'fp-ts/Apply'
+import { Apply2, apS as apS_, sequenceS } from 'fp-ts/Apply'
 import { Comonad2 } from 'fp-ts/Comonad'
 import { Extend2 } from 'fp-ts/Extend'
 import { Foldable, Foldable1 } from 'fp-ts/Foldable'
@@ -251,6 +251,12 @@ export const Comonad: Comonad2<URI> = {
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 0.3.9
+ * @category Combinators
+ */
+export const struct = sequenceS(Apply)
 
 /**
  * Derivable from `Extend`.
